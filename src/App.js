@@ -1,72 +1,137 @@
-import React from "react";
-import Button from "./Components/Button";
-import "./App.css"
-import { increaseBtnCount } from "./redux/todoReducer";
-import { useDispatch, useSelector } from "react-redux";
-const App = () => {
-  const dispatch = useDispatch();
-  const selector = useSelector((state) => state.increase);
-  const array = ["A", "B", "C", "D", "E", "F", "G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
+import React, { useEffect, useState } from "react";
+import { data } from "./Utilities/Data";
+
+export default function App() {
+  
+  const [isOneClick, setIsOneClick] = useState(false);
+  const [isTwoClick, setIsTwoClick] = useState(false);
+  const [isOneWaiting, setIsOneWaiting] = useState(false);
+  const [isTwoWaiting, setIsTwoWaiting] = useState(false);
+
+  
+
+  function handleOneClick(ele){
+    setIsOneClick(true);
+    setIsTwoClick(false);
+    ele.isOneClicked = isOneClick;
+    ele.isTwoClicked = isTwoClick;
+    setIsOneWaiting(false);
+    new Audio("https://assets.mixkit.co/active_storage/sfx/792/792-preview.mp3").play();
+  }
+
+  function handleTwoClick(ele){
+    setIsOneClick(false);
+    setIsTwoClick(true);
+    ele.isOneClicked = isOneClick;
+    ele.isTwoClicked = isTwoClick;
+    setIsTwoWaiting(false);
+    new Audio("https://assets.mixkit.co/active_storage/sfx/677/677-preview.mp3").play();
+  }
+
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsOneWaiting(true);
+    }, 2000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [isOneWaiting]);
+  
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsTwoWaiting(true);
+    }, 3000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [isTwoWaiting]);
+
   return (
-    <div className="">
-      <div className="buttons">
-        {array.map((ele, ind) => {
-          return (
-            <Button
-              // value={ele}
-              dispatch={dispatch}
-              increaseBtnCount={increaseBtnCount}
-              name={ele}
-            />
-          );
-        })}
-      </div>
-      <div>
-        <table>
-          <thead>
-            <tr>
-              {array.map((ele) =>{
-                return(
-                  <th>{ele}</th>
-                )
-              })}
-              
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{selector.A}</td>
-              <td>{selector.B}</td>
-              <td>{selector.C}</td>
-              <td>{selector.D}</td>
-              <td>{selector.E}</td>
-              <td>{selector.F}</td>
-              <td>{selector.G}</td>
-              <td>{selector.H}</td>
-              <td>{selector.I}</td>
-              <td>{selector.J}</td>
-              <td>{selector.K}</td>
-              <td>{selector.L}</td>
-              <td>{selector.M}</td>
-              <td>{selector.N}</td>
-              <td>{selector.O}</td>
-              <td>{selector.P}</td>
-              <td>{selector.Q}</td>
-              <td>{selector.R}</td>
-              <td>{selector.S}</td>
-              <td>{selector.T}</td>
-              <td>{selector.U}</td>
-              <td>{selector.V}</td>
-              <td>{selector.W}</td>
-              <td>{selector.X}</td>
-              <td>{selector.Y}</td>
-              <td>{selector.Z}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <div>
+      App
+      {data.map((ele, index) => {
+        return (
+          <div key={index} style={{ display: "flex", gap: "10px" }}>
+            {/* left side  */}
+            {!isOneClick ? (
+              <div onClick={(ele)=>handleOneClick(ele)} style={{ border: "1px solid", height: "500px" }}>
+                <img
+                  style={{
+                    width: "300px",
+                    height: "500px",
+                    border: "1px solid red",
+                  }}
+                  src={ele.thumbnailOne}
+                />
+              </div>
+            ) : !isOneWaiting ? (
+              <div style={{ border: "1px solid", height: "500px" }}>
+                <img
+                  style={{
+                    width: "300px",
+                    height: "500px",
+                    border: "1px solid red",
+                  }}
+                  src={ele.pressedOne}
+                />
+              </div>
+            ) :(
+              <div style={{ border: "1px solid", height: "500px" }}>
+                <img
+                  style={{
+                    width: "300px",
+                    height: "500px",
+                    border: "1px solid red",
+                  }}
+                  src={ele.waitingOne}
+                />
+              </div>
+            )
+            }
+
+            {/* Right Side  */}
+            {!isTwoClick ? (
+              <div onClick={(ele)=>handleTwoClick(ele)} style={{ border: "1px solid", height: "500px" }}>
+                <img
+                  style={{
+                    width: "300px",
+                    height: "500px",
+                    border: "1px solid red",
+                  }}
+                  src={ele.thumbnailTwo}
+                />
+              </div>
+            ) : !isTwoWaiting ? (
+              <div style={{ border: "1px solid", height: "500px" }}>
+                <img
+                  style={{
+                    width: "300px",
+                    height: "500px",
+                    border: "1px solid red",
+                  }}
+                  src={ele.pressedTwo}
+                />
+              </div>
+            ):(
+              <div style={{ border: "1px solid", height: "500px" }}>
+                <img
+                  style={{
+                    width: "300px",
+                    height: "500px",
+                    border: "1px solid red",
+                  }}
+                  src={ele.waitingTwo}
+                />
+              </div>
+            )
+          }
+          </div>
+        );
+      })}
     </div>
   );
-};
-
-export default App;
+}
